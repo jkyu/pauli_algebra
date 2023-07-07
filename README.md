@@ -20,6 +20,29 @@ A test suite is included and can be executed by running the following command in
 pytest .
 ```
 
+## Example usage
+Here's a quick example just running a few commands in terminal.
+It matches the result from doing the operations by hand.
+There are additional test cases in the test suite.
+```
+>>> from pauli_algebra import algebra
+>>> A = algebra.make_pauli_algebra_element("XYZ")
+>>> print(A)
+XYZ
+>>> B = algebra.make_pauli_algebra_element("YZX")
+>>> print(B)
+YZX
+>>> iA = algebra.multiply_pauli_algebra_by_scalar(1j, A)
+>>> print(iA)
+iXYZ
+>>> C = algebra.add_pauli_algebra(iA, B)
+>>> print(C)
+iXYZ + YZX
+>>> CA = algebra.multiply_pauli_algebra(C, A)
+>>> print(CA)
+iIII + iZXY
+```
+
 ## Implementation discussion
 
 Before starting a discussion of how I approached each goal (and where to find the code corresponding to each goal), I want to point out that most of the following information is redundant with documentation in the code itself.
