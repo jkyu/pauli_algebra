@@ -15,8 +15,6 @@ from pauli_algebra.utils import (
     generate_pauli_element_from_tuples,
 )
 
-### Tests
-
 
 class TestCompositePauliElement:
     pauli_types = {"I": Pauli_I, "X": Pauli_X, "Y": Pauli_Y, "Z": Pauli_Z}
@@ -193,6 +191,10 @@ class TestPauliAlgebra:
         ],
     )
     def test_multiply_algebra_by_scalar(self, strings, scalars, multiply_by):
+        """
+        Test that multiplication by a scalar results in the
+        expected scaled coefficients.
+        """
         pauli_element = generate_pauli_element_from_strings_and_scalars(
             strings, scalars
         )
@@ -230,6 +232,10 @@ class TestPauliAlgebra:
         ],
     )
     def test_add_pauli_algebra(self, params1, params2, ref_final_scalars):
+        """
+        Test that addition is properly represented for
+        expressions that will not require simplification.
+        """
         pauli1 = generate_pauli_element_from_tuples(params1)
         pauli2 = generate_pauli_element_from_tuples(params2)
         pauli_sum = add_pauli_algebra(pauli1, pauli2)
@@ -266,6 +272,10 @@ class TestPauliAlgebra:
     def test_add_pauli_algebra_with_simpliciation(
         self, params1, params2, ref_final_scalars
     ):
+        """
+        Test that addition is properly represented for
+        expressions that are simplified automatically.
+        """
         pauli1 = generate_pauli_element_from_tuples(params1)
         pauli2 = generate_pauli_element_from_tuples(params2)
         pauli_sum = add_pauli_algebra(pauli1, pauli2)
@@ -292,6 +302,10 @@ class TestPauliAlgebra:
         ],
     )
     def test_multiply_pauli_algebra(self, params1, params2, ref_final_scalars):
+        """
+        Test that multiplication is performed correctly
+        for a few test cases.
+        """
         pauli1 = generate_pauli_element_from_tuples(params1)
         pauli2 = generate_pauli_element_from_tuples(params2)
         pauli_product = multiply_pauli_algebra(pauli1, pauli2)

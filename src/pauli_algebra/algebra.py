@@ -303,7 +303,7 @@ def make_pauli_algebra_element(string: str, scalar: complex = 1) -> PauliAlgebra
     return PauliAlgebra.make_pauli_algebra_element(string, scalar)
 
 
-def pauli_element_to_string(pauli_element: PauliAlgebra) -> str:
+def pauli_algebra_to_string(pauli_element: PauliAlgebra) -> str:
     """
     Returns the string form of the Pauli expression (potentially
     a linear combination of composite Pauli matrices).

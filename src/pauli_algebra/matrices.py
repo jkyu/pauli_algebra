@@ -23,6 +23,8 @@ class PauliMatrix(ABC):
     """
 
     def __init__(self, phase: complex = 1):
+        if phase not in VALID_PHASES:
+            raise ValueError(f"Invalid phase {phase} used to instantiated PauliMatrix")
         self.phase = phase
         self.string = self._to_string()
 

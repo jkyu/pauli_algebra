@@ -21,17 +21,27 @@ class TestPauliUtils:
     TEST_BOUND = 10
 
     def test_generate_random_hermitian(self):
+        """
+        Verify that the random matrix generated is in fact Hermitian.
+        """
         matrix = generate_random_hermitian(self.TEST_BOUND, size=PAULI_DIM)
 
         # verify that the conjugate transpose of the matrix is itself
         difference = matrix - np.conjugate(np.transpose(matrix))
-        # infinity norm within epsilon of zero
+        # infinity norm is within epsilon of zero
         assert np.max(np.abs(difference)) < self.EPSILON
 
     def test_get_pauli_expansion_coefficients(self):
-        # reconstruct the matrix from its expansion coeffs
+        """
+        Tests that the infinity norm of the difference between
+        the original 2x2 Hermitian matrix and its reconstruction
+        from the Pauli matrix decomposition is numerically zero.
+        """
         matrix = generate_random_hermitian(self.TEST_BOUND, size=PAULI_DIM)
+
+        # perform decomposition in the basis of the Pauli matrices
         expansion_coefficients = get_pauli_expansion_coefficients(matrix)
+        # reconstruct the matrix from its decomposition
         reconstructed_matrix = (
             expansion_coefficients.rI * Pauli_I.vector
             + expansion_coefficients.rX * Pauli_X.vector
@@ -40,11 +50,16 @@ class TestPauliUtils:
         )
         reconstructed_matrix = np.reshape(reconstructed_matrix, PAULI_MATRIX_SHAPE)
 
+        # verify the original and reconstructed matrices are
+        # the same using the infinity norm of the difference
         difference = matrix - reconstructed_matrix
         assert np.max(np.abs(difference)) < self.EPSILON
 
     def test_get_pauli_projections(self):
-        # test all projection components are real
+        """
+        Verify that all coefficients obtained from projecting
+        a Hermitian matrix onto the Pauli basis are real.
+        """
         matrix = generate_random_hermitian(self.TEST_BOUND, size=PAULI_DIM)
         vector = np.reshape(matrix, PAULI_VECTOR_SHAPE)
         projection_components = get_pauli_projections(vector)
