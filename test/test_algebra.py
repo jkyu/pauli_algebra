@@ -8,6 +8,7 @@ from pauli_algebra.algebra import (
     make_pauli_algebra_element,
     multiply_pauli_algebra,
     multiply_pauli_algebra_by_scalar,
+    pauli_algebra_to_string,
 )
 from pauli_algebra.matrices import Pauli_I, Pauli_X, Pauli_Y, Pauli_Z
 from pauli_algebra.utils import (
@@ -147,7 +148,7 @@ class TestPauliAlgebra:
         # check dimension is correct
         assert pauli_element.num_qubits == len(strings[0])
         # check string
-        assert str(pauli_element) == ref_string
+        assert pauli_algebra_to_string(pauli_element) == ref_string
 
     @pytest.mark.parametrize(
         "strings, scalars, ref",
