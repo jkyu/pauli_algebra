@@ -61,7 +61,8 @@ Please see `test/test_matrices.py` for verification that the Pauli matrix operat
 ### Goal 4 Implementation
 Goal 4 is primarily implemented in the `pauli_algebra.algebra` module, although it builds on the code written for the previous goals.
 This follows the same principle of treating linear combinations of composite Pauli operators as primatives.
-I reference these linear combinations as "Pauli expressions" throughout comments in the code, which I hope does not overload terminology in this domain, but the usage is consistent here.
+I reference these linear combinations as "Pauli expressions" throughout comments in the code.
+I hope this does not overload terminology in this domain, but the usage is consistent here.
 - The `CompositePauliElement` class is implemented to facilitate the matching of composite Pauli matrices during simplification. Simplification is performed by hashing the string of symbols and combining scalar factors that share the same hash.
 - This results in a trade-off where `CompositePauliElement` does not also contain information about its scalar factor. This is a design decision made to prevent any confusion over the "equality" (according to the hash function) of composite Pauli matrices that have different scalar factors. A NamedTuple, `ScaledCompositePauliElement` composes a complex scalar and the `CompositePauliElement` to satisfy the need for association between a scalar factor and the composite Pauli matrix that it scales.
 - `PauliAlgebra` then implements the representation of a linear combination of composite Pauli operators, e.g., $iXYZ - 2YZX$ (in contrast to `CompositePauliElement`, which represents only one term). I made the choice to simplify the Pauli expression upon instantiation of the `PauliAlgebra` object.
