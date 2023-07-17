@@ -1,4 +1,4 @@
-# Pauli Computer Algebra (Jimmy Yu)
+# Pauli Computer Algebra
 
 ## Install the package
 Running the Pauli computer algebra package requires installing it as a python package.
@@ -43,29 +43,29 @@ iXYZ + YZX
 iIII + iZXY
 ```
 
-## Implementation discussion
+## Design decisions
 
 Before starting a discussion of how I approached each goal (and where to find the code corresponding to each goal), I want to point out that most of the following information is redundant with documentation in the code itself.
 Some of the discussion may be extraneous, so feel free to dig into the code instead of reading the following write-up if you prefer.
 While I did write docstrings for the important functions, they are not formatted to any particular standard. 
 
-### Goal 1 Implementation
-Goal 1 is implemented in `pauli_algebra.utils.generate_random_hermitian()`. 
+### Hermitian matrix generator
+The function `pauli_algebra.utils.generate_random_hermitian()` can be used to generate random Hermitian matrices.
 This function supports generation of a Hermitian matrix of arbitrary dimension and with complex elements.
 `test_utils.TestPauliUtils.test_generate_random_hermitian()` verifies that this function generates Hermitian matrices.
 
 Note: a deviation is made from the prompt here. Samples for the real and imaginary components of the elements of the Hermitian matrix are drawn from $Uniform[-b,b)$ rather than $Uniform(-b,b)$ because `numpy.random.uniform()` uses an inclusive lower bound. I don't think this is a big deal for this application.
 
-### Goal 2 Implementation
-Goal 2 is implemented across `pauli_algebra.utils.get_pauli_expansion_coefficients()` and `pauli_algebra.matrices`.
-For the purposes of Goal 2, `pauli_algebra.matrices` includes vector representations of four $2\times 2$ Pauli matrices.
+### Expansion of Hermitian matrices in the Pauli basis
+Functionality to perform decompositions of arbitrary $2\times 2$ Hermitian matrices in the Pauli basis is implemented across `pauli_algebra.utils.get_pauli_expansion_coefficients()` and `pauli_algebra.matrices`.
+`pauli_algebra.matrices` includes vector representations of four $2\times 2$ Pauli matrices.
 These are basis vectors for the Pauli matrix decomposition: $$r_II + r_XX + r_YY+r_ZZ$$
 
 The scalar factors $r_I, r_X, r_Y,$ and $r_Z$ are obtained by projection of the Hermitian matrix on each of the basis vectors $I, X, Y,$ and $Z$.
 `test_utils.TestPauliUtils.test_get_pauli_expansion_coefficients()` verifies the correctness of the expansion and `test_utils.TestPauliUtils.test_get_pauli_projections()` verifies that $r_I, r_X, r_Y$ and $r_Z$ are real.
 
-### Goal 3 Implementation
-Goal 3 is implemented in the `pauli_algebra.matrices` module. 
+### Symbolic algebra in the Pauli basis
+This is implemented in the `pauli_algebra.matrices` module. 
 The Pauli matrices $I, X, Y,$ and $Z$ are instantiated by calling the constructors `Pauli_I()`, `Pauli_X()`, `Pauli_Y()`, and `Pauli_Z()`, respectively.
 An optional argument can be used to specify the phase, which defaults to 1 otherwise.
 The Pauli matrix products are enumerated so that the Pauli Computer Algebra can perform symbolic operations without manipulating any matrices.
@@ -81,11 +81,10 @@ There are only 16 such combinations, so this would work to avoid making a new ob
 
 Please see `test/test_matrices.py` for verification that the Pauli matrix operations behave correctly.
 
-### Goal 4 Implementation
-Goal 4 is primarily implemented in the `pauli_algebra.algebra` module, although it builds on the code written for the previous goals.
+### Direct product matrices in the Pauli basis
+Support for multiple qubits, represented as elements of direct product spaces, is primarily implemented in the `pauli_algebra.algebra` module.
 This follows the same principle of treating linear combinations of composite Pauli operators as primatives.
 I reference these linear combinations as "Pauli expressions" throughout comments in the code.
-I hope this does not overload terminology in this domain, but the usage is consistent here.
 - The `CompositePauliElement` class is implemented to facilitate the matching of composite Pauli matrices during simplification. Simplification is performed by hashing the string of symbols and combining scalar factors that share the same hash.
 - This results in a trade-off where `CompositePauliElement` does not also contain information about its scalar factor. This is a design decision made to prevent any confusion over the "equality" (according to the hash function) of composite Pauli matrices that have different scalar factors. A NamedTuple, `ScaledCompositePauliElement` composes a complex scalar and the `CompositePauliElement` to satisfy the need for association between a scalar factor and the composite Pauli matrix that it scales.
 - `PauliAlgebra` then implements the representation of a linear combination of composite Pauli operators, e.g., $iXYZ - 2YZX$ (in contrast to `CompositePauliElement`, which represents only one term). I made the choice to simplify the Pauli expression upon instantiation of the `PauliAlgebra` object.
